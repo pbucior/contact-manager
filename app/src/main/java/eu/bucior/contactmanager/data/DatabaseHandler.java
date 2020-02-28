@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.bucior.contactmanager.R;
 import eu.bucior.contactmanager.model.Contact;
 import eu.bucior.contactmanager.util.Util;
@@ -62,5 +65,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         contact.setPhoneNumber(cursor.getString(2));
 
         return contact;
+    }
+
+    public List<Contact> getAllContacts() {
+        List<Contact> contactList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectAll = "SELECT * FROM " + Util.TABLE_NAME;
+        Cursor cursor = db.rawQuery(selectAll, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Contact contact = new Contact();
+                contact.setId(Integer.parseInt(cursor.getString(0)));
+                contact.setName(cursor.getString(1));
+                contact.setPhoneNumber(cursor.getString(2));
+                contactList.add(contact);
+            } while (cursor.moveToNext());
+        }
+
+        return contactList;
     }
 }
