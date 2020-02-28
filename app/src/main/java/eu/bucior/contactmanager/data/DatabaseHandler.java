@@ -1,10 +1,12 @@
 package eu.bucior.contactmanager.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import eu.bucior.contactmanager.R;
+import eu.bucior.contactmanager.model.Contact;
 import eu.bucior.contactmanager.util.Util;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -29,5 +31,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(DROP_TABLE, new String[]{Util.TABLE_NAME});
 
         onCreate(db);
+    }
+
+    public void addContact(Contact contact) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(Util.KEY_NAME, contact.getName());
+        values.put(Util.KEY_PHONE_NUMBER, contact.getPhoneNumber());
+
+        db.insert(Util.TABLE_NAME, null, values);
+        db.close();
     }
 }
