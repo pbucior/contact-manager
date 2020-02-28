@@ -2,6 +2,7 @@ package eu.bucior.contactmanager.data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -42,5 +43,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         db.insert(Util.TABLE_NAME, null, values);
         db.close();
+    }
+
+    public Contact getContact(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(Util.TABLE_NAME,
+                new String[]{Util.KEY_ID, Util.KEY_NAME, Util.KEY_PHONE_NUMBER},
+                Util.KEY_ID + "=?", new String[]{String.valueOf(id)},
+                null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Contact contact = new Contact();
+        contact.setId(Integer.parseInt(cursor.getString(0)));
+        contact.setName(cursor.getString(1));
+        contact.setPhoneNumber(cursor.getString(2));
+
+        return contact;
     }
 }
