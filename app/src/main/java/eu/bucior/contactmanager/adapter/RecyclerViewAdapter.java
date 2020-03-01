@@ -1,9 +1,11 @@
 package eu.bucior.contactmanager.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import eu.bucior.contactmanager.DetailsActivity;
 import eu.bucior.contactmanager.R;
 import eu.bucior.contactmanager.model.Contact;
 
@@ -44,15 +47,32 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return contactList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView contactName;
         public TextView phoneNumber;
+        public ImageView iconButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             contactName = itemView.findViewById(R.id.name);
             phoneNumber = itemView.findViewById(R.id.phone_number);
+            iconButton = itemView.findViewById(R.id.icon_button);
+
+            iconButton.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            int position = getAdapterPosition();
+            Contact contact = contactList.get(position);
+
+            Intent intent = new Intent(context, DetailsActivity.class);
+            intent.putExtra("name", contact.getName());
+            intent.putExtra("phone", contact.getPhoneNumber());
+            context.startActivity(intent);
+
         }
     }
 }
