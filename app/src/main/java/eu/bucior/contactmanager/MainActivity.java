@@ -1,53 +1,45 @@
 package eu.bucior.contactmanager;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
-import java.lang.reflect.Array;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.bucior.contactmanager.adapter.RecyclerViewAdapter;
 import eu.bucior.contactmanager.data.DatabaseHandler;
 import eu.bucior.contactmanager.model.Contact;
 
 public class MainActivity extends AppCompatActivity {
-    private ListView listView;
-    private ArrayList<String> contactArrayList;
-    private ArrayAdapter<String> arrayAdapter;
+    private RecyclerView recyclerView;
+    private RecyclerViewAdapter recyclerViewAdapter;
+    private ArrayList<Contact> contactArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listView = findViewById(R.id.listview);
-        contactArrayList = new ArrayList<>();
+
         DatabaseHandler db = new DatabaseHandler(MainActivity.this);
 
         List<Contact> contactList = db.getAllContacts();
+        contactArrayList = new ArrayList<>();
 
         for (Contact contact : contactList) {
-            contactArrayList.add(contact.getName());
+            contactArrayList.add(contact);
         }
 
-        arrayAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                contactArrayList
-        );
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        listView.setAdapter(arrayAdapter);
+        recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, contactArrayList);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        recyclerView.setAdapter(recyclerViewAdapter);
 
-            }
-        });
 
     }
 }
